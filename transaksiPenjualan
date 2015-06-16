@@ -144,6 +144,76 @@ public class transaksiPenjualan
      {"3622","DEMACOLIN TAB/100","432","400"}
 
    };
+   //vector of vector
+   public static Vector<String> addBarang(String ktrans,String kode,String nama,String jbarang,String harga,String jumlah,String total)
+   {
+     Vector<String> vec=new Vector<String>();
+     vec.addElement(ktrans);
+     vec.addElement(kode);
+     vec.addElement(nama);
+     vec.addElement(jbarang);
+     vec.addElement(harga);
+     vec.addElement(jumlah);
+     vec.addElement(total);
+     return vec;
+   }
+   public static Vector<String> addCustomer(String id,String date,String gtotal)
+   {
+     Vector<String> vec=new Vector<String>();
+     vec.addElement(id);
+     vec.addElement(date);
+     vec.addElement(gtotal);
+     return vec;     
+   } 
+   public static void login()
+   {
+     int k=-1;
+     int count=0;  
+     do{
+       System.out.println("--------LOGIN SISTEM KASIR ["+(count+1)+"]--------");
+       System.out.print("ID       : ");
+       String user=sc.next();
+       System.out.print("PASSWORD : ");
+       String sandi=sc.next();
+       for (int i=0;i<id.length;i++)
+       {
+         if(user.equals(id[i][0])&&sandi.equals(id[i][1]))
+         {
+           count=4;
+           k=i;
+           pl=i;
+         }
+       }
+       count++;
+     }while(count<3);
+     if(k==-1)
+     {
+       System.out.println("Anda Sudah Mencoba 3x!\nSystem Lock.");
+       System.exit(0);
+     }  
+   }
+   //tanggal jam
+  public static String getTanggalJam() {  
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");  
+        Date date = new Date();  
+        return dateFormat.format(date);  
+    }
+  
+  public static String getTanggal() {  
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");  
+        Date date = new Date();  
+        return dateFormat.format(date);  
+    }
+  public static String getKode() {  
+        DateFormat dateFormatKode = new SimpleDateFormat("ddMMyy");  
+        Date date = new Date();  
+        return dateFormatKode.format(date);  
+    }
+  public static String getCustomer()
+  {
+    String hasil=getKode()+(cid+1);
+    return hasil;
+  }
   public static void tidakKetemu()
    {
      if(idx==-1)
@@ -151,6 +221,50 @@ public class transaksiPenjualan
             System.out.println("Data Tidak Dapat ditemukan");
           }
    }
+  public static void sortData()
+  {
+    int j=0;
+    String t;
+    String u;
+    String v;
+    String w;
+    
+    //bubble
+    for(int i=dBarang.length;i>0;i--)
+    {
+      for(j=0;j<(i-1);j++)
+      {
+        if(Integer.parseInt(dBarang[j][0])>Integer.parseInt(dBarang[j+1][0]))
+        {
+          //pindah
+          t=dBarang[j][0];
+          u=dBarang[j][1];
+          v=dBarang[j][2];
+          w=dBarang[j][3];
+          //mundur 1  
+          dBarang[j][0]=dBarang[j+1][0];
+          dBarang[j][1]=dBarang[j+1][1];
+          dBarang[j][2]=dBarang[j+1][2];
+          dBarang[j][3]=dBarang[j+1][3];
+          //asal=maju 1
+          dBarang[j+1][0]=t;
+          dBarang[j+1][1]=u;
+          dBarang[j+1][2]=v;
+          dBarang[j+1][3]=w;
+        }
+      }
+    }
+  }
+  //omset
+  public static int omsetJual(int jumlah)
+  {
+    omset+=jumlah;
+    return omset;
+  }
+  public static void cetakGaris()
+  {
+    System.out.println("**********************************************");
+  }
    
   public static void cariBarang()throws IOException
   {
@@ -177,7 +291,7 @@ public class transaksiPenjualan
           }
           tidakKetemu();
            System.out.println("---------------------------------------------------------------------");
-        break;
+       break;
       case 2:
         System.out.print("Masukan Nama Barang : ");
         String nama=br.readLine();
@@ -234,41 +348,6 @@ public class transaksiPenjualan
             break;    
     }      
   }
-  public static void sortData()
-  {
-    int j=0;
-    String t;
-    String u;
-    String v;
-    String w;
-    
-  //bubble
-    for(int i=dBarang.length;i>0;i--)
-    {
-      for(j=0;j<(i-1);j++)
-      {
-        if(Integer.parseInt(dBarang[j][0])>Integer.parseInt(dBarang[j+1][0]))
-        {
-          //pindah
-          t=dBarang[j][0];
-          u=dBarang[j][1];
-          v=dBarang[j][2];
-          w=dBarang[j][3];
-          //mundur 1  
-          dBarang[j][0]=dBarang[j+1][0];
-          dBarang[j][1]=dBarang[j+1][1];
-          dBarang[j][2]=dBarang[j+1][2];
-          dBarang[j][3]=dBarang[j+1][3];
-          //asal=maju 1
-          dBarang[j+1][0]=t;
-          dBarang[j+1][1]=u;
-          dBarang[j+1][2]=v;
-          dBarang[j+1][3]=w;
-        }
-      }
-    }
-  }
-  
   //maintenance 
   public static void editBarang()throws IOException
   {
@@ -311,18 +390,18 @@ public class transaksiPenjualan
                   {
                     System.out.println("Input Harga Barang Minimal = Rp.1 ");
                   }
-                  else
-                  {
-                    String [][]newdBarang=new String[dBarang.length][4];
-                    System.arraycopy(dBarang,0,newdBarang,0,dBarang.length);
-                    dBarang=new String[dBarang.length+1][4];
-                    System.arraycopy(newdBarang,0,dBarang,0,newdBarang.length);
-                    dBarang[dBarang.length-1][0]=kode;
-                    dBarang[dBarang.length-1][1]=nama;
-                    dBarang[dBarang.length-1][2]=jumlah;
-                    dBarang[dBarang.length-1][3]=harga;
-                    System.out.println("---------------------------------------------------------------------");
-                  }
+                    else
+                    {
+                      String [][]newdBarang=new String[dBarang.length][4];
+                      System.arraycopy(dBarang,0,newdBarang,0,dBarang.length);
+                      dBarang=new String[dBarang.length+1][4];
+                      System.arraycopy(newdBarang,0,dBarang,0,newdBarang.length);
+                      dBarang[dBarang.length-1][0]=kode;
+                      dBarang[dBarang.length-1][1]=nama;
+                      dBarang[dBarang.length-1][2]=jumlah;
+                      dBarang[dBarang.length-1][3]=harga;
+                      System.out.println("---------------------------------------------------------------------");
+                    }
                 }
         }
         //sorting
@@ -401,7 +480,6 @@ public class transaksiPenjualan
           }
          tidakKetemu();
          System.out.println("---------------------------------------------------------------------");
-
         break;
       case 4:
         break;
@@ -410,12 +488,7 @@ public class transaksiPenjualan
         break;
     }
   }
-  //omset
-  public static int omsetJual(int jumlah)
-  {
-    omset+=jumlah;
-    return omset;
-  }
+  
   //view
   public static void viewBarang()
   {
@@ -428,29 +501,15 @@ public class transaksiPenjualan
             System.out.println("________________________________________________________________________________________________");
          }
   }
-  //tanggal jam
-  public static String getTanggal() {  
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");  
-        Date date = new Date();  
-        return dateFormat.format(date);  
-    }
-  public static String getKode() {  
-        DateFormat dateFormatKode = new SimpleDateFormat("ddMMyy");  
-        Date date = new Date();  
-        return dateFormatKode.format(date);  
-    }
-  public static String getCustomer()
-  {
-    String hasil=getKode()+(cid+1);
-    return hasil;
-  }
+ 
+  
+
   
   //cetak struk
     public static void cetakStruk(int cid,int n,int terjual)
   {
     int kembali=0;
-    if (terjual>0)
-    {
+    
     cetakGaris(); 
     System.out.println("             APOTEK SEGER WARAS");
     System.out.println("           PT.BANGUN TIDUR SUKSES");
@@ -480,34 +539,9 @@ public class transaksiPenjualan
      cetakGaris();
      System.out.println("       Terima Kasih Atas Kunjungan Anda     ");
      cetakGaris();
-    }
+    
   }
-    //vector of vector
- public static Vector<String> addBarang(String ktrans,String kode,String nama,String jbarang,String harga,String jumlah,String total)
- {
-   Vector<String> vec=new Vector<String>();
-   vec.addElement(ktrans);
-   vec.addElement(kode);
-   vec.addElement(nama);
-   vec.addElement(jbarang);
-   vec.addElement(harga);
-   vec.addElement(jumlah);
-   vec.addElement(total);
-   return vec;
- }
-  public static Vector<String> addCustomer(String id,String date,String gtotal)
- {
-   Vector<String> vec=new Vector<String>();
-   vec.addElement(id);
-   vec.addElement(date);
-   vec.addElement(gtotal);
-   return vec;
-   
- }
-  public static void cetakGaris()
-  {
-    System.out.println("**********************************************");
-  }
+    
   //transaksi penjualan
   public static void transaksiJual()
   {
@@ -519,9 +553,8 @@ public class transaksiPenjualan
     String tanggal="";
     int terjual=0;
     custId=getCustomer();
-    tanggal=getTanggal();
+    tanggal=getTanggalJam();
     int jml=0;
-
     System.out.println("-------------Transaksi Penjualan------------");
     do{
      idx=-1;
@@ -539,10 +572,10 @@ public class transaksiPenjualan
            }
            else
            {        
-         System.out.println("Kode         : "+dBarang[i][0]+"\nNama Barang  : "+dBarang[i][1]+"\nHarga Satuan : Rp."+dBarang[i][3]+
-                            "\nStock Barang : "+dBarang[i][2]);
-         System.out.print("Jumlah Pembelian : ");
-         jml=sc.nextInt();
+             System.out.println("Kode         : "+dBarang[i][0]+"\nNama Barang  : "+dBarang[i][1]+"\nHarga Satuan : Rp."+dBarang[i][3]+
+                                "\nStock Barang : "+dBarang[i][2]);
+             System.out.print("Jumlah Pembelian : ");
+             jml=sc.nextInt();
               if(jml>Integer.parseInt(dBarang[i][2]))
               {
                 System.out.println("Jumlah Melebihi Dari Stock Barang,Silahkan Input Lagi");
@@ -555,17 +588,15 @@ public class transaksiPenjualan
                 }
                 else
                 {
-         total=Integer.parseInt(dBarang[i][3])*jml;   
-         grandTotal+=total;
-         //add to vector
-         vBarang.addElement(addBarang(custId,dBarang[i][0],dBarang[i][1],dBarang[i][2],dBarang[i][3],Integer.toString(jml),Integer.toString(total)));
-         //kurangi stock
-         int kurangBarang=Integer.parseInt(dBarang[i][2])-jml;
-         dBarang[i][2]=Integer.toString(kurangBarang);
-         
-         
-         jterjual++;
-         terjual++;
+                  total=Integer.parseInt(dBarang[i][3])*jml;   
+                  grandTotal+=total;
+                  //add to vector
+                  vBarang.addElement(addBarang(custId,dBarang[i][0],dBarang[i][1],dBarang[i][2],dBarang[i][3],Integer.toString(jml),Integer.toString(total)));
+                  //kurangi stock
+                  int kurangBarang=Integer.parseInt(dBarang[i][2])-jml;
+                  dBarang[i][2]=Integer.toString(kurangBarang);
+                  jterjual++;
+                  terjual++;
                 }
               }
        }
@@ -579,40 +610,16 @@ public class transaksiPenjualan
         lagi=true;
       }
     }while(lagi==true);
-     vCustomer.addElement(addCustomer(custId,tanggal,Integer.toString(grandTotal)));
-     cetakStruk(cid,n,terjual);
-     n=jterjual;
-     omsetJual(grandTotal);
-     cid++;
-    }
-  public static void login()
-  {
-  int k=-1;
-  int count=0;  
-  do{
-      System.out.println("--------LOGIN SISTEM KASIR ["+(count+1)+"]--------");
-      System.out.print("ID       : ");
-      String user=sc.next();
-      System.out.print("PASSWORD : ");
-      String sandi=sc.next();
-      for (int i=0;i<id.length;i++)
-      {
-        if(user.equals(id[i][0])&&sandi.equals(id[i][1]))
-        {
-          count=4;
-          k=i;
-          pl=i;
-        }
-      }
-      count++;
-    }while(count<3);
-    if(k==-1)
-    {
-      System.out.println("Anda Sudah Mencoba 3x!\nSystem Lock.");
-      System.exit(0);
+    if(terjual>0)
+     {
+      vCustomer.addElement(addCustomer(custId,tanggal,Integer.toString(grandTotal)));
+      cetakStruk(cid,n,terjual);
+      n=jterjual;
+      omsetJual(grandTotal);
+      cid++;
+     }
     }
   
-  }
   public static void viewPenjualan()
   {
     int item=0;
@@ -645,7 +652,6 @@ public class transaksiPenjualan
     System.out.println("[5]Pencarian Data Barang\n[6]Omset Penjualan\n[7]Exit");
     System.out.print("Masukan Pilihan [1-7] : ");
     int pil=sc.nextInt();
-    
     switch(pil)
     {
       case 1:
@@ -664,7 +670,7 @@ public class transaksiPenjualan
         cariBarang();
         break;
       case 6:
-        System.out.println("Hasil Penjualan Hari Ini : Rp."+omsetJual(0));        
+        System.out.println("Hasil Penjualan Tanggal "+getTanggal()+" : Rp."+omsetJual(0));        
         break;
       case 7:
         System.exit(0);
@@ -672,7 +678,6 @@ public class transaksiPenjualan
       default:
         System.out.println("Masukan Anda Salah,Inputkan [1-6] Saja");
         break;
-    
     }
     }while(true);
   }
